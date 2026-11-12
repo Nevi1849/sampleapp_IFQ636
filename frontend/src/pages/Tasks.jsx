@@ -10,14 +10,17 @@ const Tasks = () => {
   const [editingTask, setEditingTask] = useState(null);
 
   useEffect(() => {
+    if (!user) return;
+    
     const fetchTasks = async () => {
       try {
-        const response = await axiosInstance.get('/api/tasks', {
+        const response = await axiosInstance.get('/api/ideas', {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         setTasks(response.data);
       } catch (error) {
-        alert('Failed to fetch tasks.');
+        console.error('Failed to fetch ideas:', error);
+        alert('Failed to fetch ideas.');
       }
     };
 
