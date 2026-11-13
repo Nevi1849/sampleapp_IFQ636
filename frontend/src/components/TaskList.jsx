@@ -3,6 +3,12 @@ const TaskList = ({ tasks }) => {
 
   return (
     <div>
+      {tasks.length === 0 &&(
+        <p className="text-gray-500 p-4">
+          No ideas match the selected filter.
+        </p>
+      )}
+
       {tasks.map((task) => (
         <div key={task._id} className="bg-gray-100 p-4 mb-4 rounded shadow">
           <h2 className="font-bold">{task.title}</h2>

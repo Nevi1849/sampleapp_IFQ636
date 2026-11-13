@@ -8,6 +8,7 @@ const Tasks = () => {
   const { user } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('All');
 
   useEffect(() => {
     if (!user) return;
@@ -27,6 +28,10 @@ const Tasks = () => {
     fetchTasks();
   }, [user]);
 
+  const filteredTasks = statusFilter === 'All'
+    ? tasks
+    : tasks.filter(task => task.status === statusFilter);
+
   return (
     <div className="container mx-auto p-6">
       <TaskForm
@@ -35,7 +40,30 @@ const Tasks = () => {
         editingTask={editingTask}
         setEditingTask={setEditingTask}
       />
-      <TaskList tasks={tasks} setTasks={setTasks} setEditingTask={setEditingTask} />
+      
+      <div className="mb-4">
+        <label htmlFor="statusFilter" className="mr-2">
+        Filter by status:
+      </label>
+
+      <select
+        id="statusFilter"
+        value={statusFilter}
+        onChange={(e) => setStatusFilter(e.target.value)}
+        className="p-2 border rounded"
+      >
+        <option value="All">All</option>
+        <option value="Draft">Draft</option>
+        <option value="Submitted">Submitted</option>
+        <option value="Under Review">Under Review</option>
+        <option value="Approved">Approved</option>
+        <option value="Revision Needed">Revision Needed</option>
+        <option value="Rejected">Rejected</option>
+      </select>
+
+      </div>
+
+      <TaskList tasks={filteredTasks} setTasks={setTasks} setEditingTask={setEditingTask} />
     </div>
   );
 };
