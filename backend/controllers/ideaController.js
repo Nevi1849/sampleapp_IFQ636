@@ -39,7 +39,11 @@ const createIdea = async (req, res) => {
 
 const getIdeas = async (req, res) => {
     try {
-        const ideas = await Idea.find({ founder: req.user._id });
+        const filter = req.user.role === 'Reviewer'
+            ?{ status: { $ne: 'Draft' }}
+            : { founder: req.user._id };
+
+        const ideas = await Idea.find(filter);
         return res.status(200).json(ideas);
 
     } catch (error) {
@@ -48,4 +52,60 @@ const getIdeas = async (req, res) => {
     }
 };
 
-module.exports = { createIdea, getIdeas };
+const reviewIdea = async (req, res) => {
+    const { id } = req.params;
+    const {
+        innovationScore,
+        feasibilityScore,
+        marketPotentialScore,
+        reviewerFeedback
+    } = req.body;
+
+    try {
+    const idea = await Idea.findById(id);
+    if (!idea) {
+        return res.status(404).json({
+            message: 'Idea not found'
+        });
+    }
+    if (idea.status === 'Draft') {
+        return res.status(403).json({
+            message: 'Draft ideas cannot be reviewed'
+        });
+    }
+    const scores = [
+        innovationScore,
+        feasibilityScore,
+        marketPotentialScore
+    ];
+
+    const validScores = scores.every(
+        score => Number.isInteger(score) && score >=1 && score <= 5
+    );
+
+    if (!validScores) {
+        return res.status(400).json({
+            message: 'All scores must be whole numbers between 1 and 5'
+        });
+    }
+
+    if (typeof reviewerFeedback !== 'string') {
+        return res.status(400).json({
+            message: 'Reviewer feedback must be text'
+        })
+    }
+    idea.innovationScore = innovationScore;
+    idea.feasibilityScore = feasibilityScore;
+    idea.marketPotentialScore = marketPotentialScore;
+    idea.reviewerFeedback = reviewerFeedback;
+    await idea.save();
+    return res.status(200).json(idea)
+
+    } catch (error) {
+        console.error('Error retrieving idea for review', error);
+        return res.status(500).json({
+            message: 'Failed to retrieve idea for review'
+        });
+    }
+};
+module.exports = { createIdea, getIdeas, reviewIdea };

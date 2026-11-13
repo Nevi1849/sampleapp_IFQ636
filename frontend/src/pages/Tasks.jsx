@@ -34,12 +34,14 @@ const Tasks = () => {
 
   return (
     <div className="container mx-auto p-6">
+      {user?.role === 'Founder' && (
       <TaskForm
         tasks={tasks}
         setTasks={setTasks}
         editingTask={editingTask}
         setEditingTask={setEditingTask}
       />
+      )}
       
       <div className="mb-4">
         <label htmlFor="statusFilter" className="mr-2">

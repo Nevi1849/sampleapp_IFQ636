@@ -32,6 +32,28 @@ const ideaSchema = new mongoose.Schema({
         required: false,
         min: 0,
     },
+    innovationScore: {
+        type: Number,
+        min: 1,
+        max: 5,
+        default: null
+    },
+    feasibilityScore: {
+        type: Number,
+        min: 1,
+        max: 5,
+        default: null
+    },
+    marketPotentialScore: {
+        type: Number,
+        min: 1,
+        max: 5,
+        default: null
+    },
+    reviewerFeedback: {
+        type: String,
+        default: ''
+    },
     status: { 
         type: String,
         enum: ['Draft', 'Submitted', 'Under Review', 'Approved', 'Revision Needed', 'Rejected'],
