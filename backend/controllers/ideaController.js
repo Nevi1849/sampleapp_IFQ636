@@ -108,4 +108,51 @@ const reviewIdea = async (req, res) => {
         });
     }
 };
-module.exports = { createIdea, getIdeas, reviewIdea };
+
+const updateIdeaStatus = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const allowedStatuses = [
+        'Under Review',
+        'Approved',
+        'Revision Needed',
+        'Rejected'
+    ];
+
+    if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({
+            message: 'Invalid review status'
+        });
+    }
+
+    try {
+        const idea = await Idea.findById(id);
+
+        if (!idea) {
+            return res.status(404).json({
+                message: 'Idea not found'
+            });
+        }
+
+        if (idea.status === 'Draft') {
+            return res.status(403).json({
+                message: 'Draft ideas cannot have their review status changed'
+            });
+        }
+
+        idea.status = status;
+        await idea.save();
+
+        return res.status(200).json(idea);
+
+    } catch (error) {
+        console.error('Error updating idea status:', error);
+        return res.status(500).json({
+            message: 'Failed to update idea status'
+        });
+    }
+};
+
+
+module.exports = { createIdea, getIdeas, reviewIdea, updateIdeaStatus };

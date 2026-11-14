@@ -3,7 +3,7 @@ import { useState} from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 
-const TaskList = ({ tasks }) => {
+const TaskList = ({ tasks, setTasks }) => {
   const { user } = useAuth();
   const [reviews, setReviews] = useState({});
   const updateReview = (ideaId, field, value) => {
@@ -37,6 +37,30 @@ console.log('Saved review', response.data);
   console.error('Failed to save review', error)
   alert(error.response?.data?.message || 'Failed to save review');
 }
+};
+
+const saveStatus = async (ideaId, status) => {
+  try {
+    const response = await axiosInstance.put(
+      `/api/ideas/${ideaId}/status`,
+      {status},
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      }
+    );
+
+    setTasks(previous =>
+      previous.map(idea =>
+        idea._id === ideaId ? response.data : idea
+      )
+    );
+    alert('Idea status updated successfully');
+  } catch (error) {
+    console.error('Failed to update idea status', error);
+    alert(error.response?.data?.message || 'Failed to update idea status');
+  }
 };
 
   return (
@@ -165,13 +189,34 @@ console.log('Saved review', response.data);
             >
               Save Review 
             </button>
-          </div>
+            <div className="mt-4">
+              <label
+              htmlFor={`status-${task._id}`}
+              className="block mb-1"
+            >
+              Review status
+            </label>
 
+            <select
+              id={`status-${task._id}`}
+              className="p-2 border rounded"
+              defaultValue=""
+              onChange={(e) => saveStatus(task._id, e.target.value)}
+              >
+                <option value="" disabled>Select new status</option>
+                <option value="Under Review">Under Review</option>
+                <option value="Approved">Approved</option>
+                <option value="Revision Needed">Revision Needed</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+          </div>
+        </div>
           )}
         </div>
       ))}
     </div>
   );
 };
+
 
 export default TaskList;
