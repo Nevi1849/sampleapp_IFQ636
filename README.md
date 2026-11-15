@@ -1,3 +1,39 @@
+#Startup Idea Management System
+**Project Overview**
+This project extends the QUT IFQ636 starter application into a Startup Idea Management System for founders and incubator reviewers.
+Founders can submit startup proposals, save drafts and view the status of their ideas. Reviewers can access submitted proposals, record evaluation scores, provide feedback and update review statuses.
+**Technology and Architecture**
+Frontend: React.js
+Backend: Node.js and Express.js
+Database: MongoDB Atlas using Mongoose
+Authentication: JSON Web Tokens (JWT)
+Deployment: AWS EC2 with Nginx
+Nginx serves the React frontend and forwards API requests to the Express backend. MongoDB Atlas is hosted separately.
+**Local Setup**
+Clone the repository.
+Install dependencies in the frontend and backend directories using npm install.
+Configure the required environment variables, including the MongoDB connection string and JWT secret. Do not commit credentials or .env files.
+Start the application using the project's development scripts.
+**Main Features**
+User registration and login
+Founder and Reviewer roles
+Startup idea submission and draft saving
+Founder dashboard with status filtering
+Reviewer scoring and written feedback
+Review status management
+**Deployment**
+The application was configured for deployment on AWS EC2 using Nginx.
+Deployment URL: http://16.179.155.182
+Public accessibility could not be verified at the time of submission.
+**Known Limitations**
+The reviewer workflow has not been fully verified end to end.
+Final review statuses can be assigned without confirming that all evaluation scores have been completed.
+Public deployment availability remains unverified.
+The Figma prototype does not cover all required interactive states or the reviewer workflow.
+**Project Management**
+Development was tracked using Jira issues SCRUM-5 to SCRUM-14 across Founder Submission and Reviewer Workflow iterations.
+**Acknowledgement**
+Based on the QUT IFQ636 starter application.
 
 **Assessment 1.2 (Total Marks **20**)**
 
